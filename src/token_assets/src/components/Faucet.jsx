@@ -1,9 +1,10 @@
 import React from "react";
+import { token } from "../../../declarations/token/index";
 
 function Faucet() {
 
-  async function handleClick(event) {
-
+  async function handleClick(event) { 
+    await token.payOut();
   }
 
   return (
@@ -12,9 +13,9 @@ function Faucet() {
         <span role="img" aria-label="tap emoji">
           🚰
         </span>
-        Faucet
+        Faucet 
       </h2>
-      <label>Get your free DAngela tokens here! Claim 10,000 DANG coins to your account.</label>
+      <label>Get your free DAngela tokens here! Claim 10,000 DANG token to your account.</label>
       <p className="trade-buttons">
         <button id="btn-payout" onClick={handleClick}>
           Gimme gimme
