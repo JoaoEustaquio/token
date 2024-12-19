@@ -25,8 +25,13 @@ actor Toker {
 
   public shared (msg) func payOut() : async Text {
     // Debug.print(debug_show (msg.caller));
-    let amount = 10000;
-    balances.put(msg.caller, amount);
-    return "Success";
+    if (balances.get(msg.caller) == null) {
+      let amount = 10000;
+      balances.put(msg.caller, amount);
+      return "Success";
+    } else {
+      return "Already Claimed";
+    }
+
   };
 };
