@@ -3,9 +3,9 @@ import HashMap "mo:base/HashMap";
 import Debug "mo:base/Debug";
 
 actor Toker {
-  var owner : Principal = Principal.fromText("f6qrt-qkftn-libgc-eoxaz-linrj-z6v2e-32ufw-6xzts-fki6u-5cs3w-sae");
-  var totalSupply : Nat = 1000000000;
-  var symbol : Text = "DANG";
+  let owner : Principal = Principal.fromText("f6qrt-qkftn-libgc-eoxaz-linrj-z6v2e-32ufw-6xzts-fki6u-5cs3w-sae");
+  let totalSupply : Nat = 1000000000;
+  let  symbol : Text = "DANG";
 
   var balances = HashMap.HashMap<Principal, Nat>(1, Principal.equal, Principal.hash);
   balances.put(owner, totalSupply);
