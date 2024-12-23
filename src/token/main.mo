@@ -1,14 +1,18 @@
 import Principal "mo:base/Principal";
 import HashMap "mo:base/HashMap";
 import Debug "mo:base/Debug";
+import Iter "mo:base/Iter";
 
 actor Toker {
   let owner : Principal = Principal.fromText("f6qrt-qkftn-libgc-eoxaz-linrj-z6v2e-32ufw-6xzts-fki6u-5cs3w-sae");
   let totalSupply : Nat = 1000000000;
-  let  symbol : Text = "DANG";
+  let symbol : Text = "DANG";
 
-  var balances = HashMap.HashMap<Principal, Nat>(1, Principal.equal, Principal.hash);
-  balances.put(owner, totalSupply);
+  private stable var balanceEntries : [(Principal, Nat)] = [];
+  private var balances = HashMap.HashMap<Principal, Nat>(1, Principal.equal, Principal.hash);
+  if (balances.size() < 1) {
+    balances.put(owner, totalSupply);
+  };
 
   public query func balanceOf(who : Principal) : async Nat {
     let balance : Nat = switch (balances.get(who)) {
@@ -34,20 +38,31 @@ actor Toker {
     };
   };
 
-  public shared (msg) func transfer(to: Principal, amount: Nat) : async Text {
+  public shared (msg) func transfer(to : Principal, amount : Nat) : async Text {
     let fromBalance = await balanceOf(msg.caller);
     if (fromBalance > amount) {
       let newFromBalance : Nat = fromBalance - amount;
       balances.put(msg.caller, newFromBalance);
 
-      let toBalance = await balanceOf(to); 
+      let toBalance = await balanceOf(to);
       let newToBalance = toBalance + amount;
       balances.put(to, newToBalance);
- 
+
       return "success";
 
     } else {
       return "Insufficient Funds";
+    };
+  };
+
+  system func preupgrade() {
+    balanceEntries := Iter.toArray(balances.entries());
+  };
+
+  system func postupgrade() {
+    balances := HashMap.fromIter<Principal, Nat>(balanceEntries.vals(), 1, Principal.equal, Principal.hash);
+    if (balances.size() < 1) {
+      balances.put(owner, totalSupply);
     };
   };
 };
